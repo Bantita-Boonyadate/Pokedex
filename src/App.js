@@ -4,6 +4,8 @@ import AddFav from './Components/AddFav';
 import List from "./Components/List";
 import axios from "axios";
 import styled from 'styled-components'
+import { allItem, addItem, deleteItem, searchItem } from './slice';
+import { useSelector, useDispatch } from 'react-redux';
 
 const COLORS = {
   Psychic: "#f8a5c2",
@@ -25,43 +27,16 @@ const Container = styled.div`
 `
 
 function App() {
-  const [card, setCard] = useState([]);
-  const [name, setName] = useState("");
-  const [filterCard, setFilterCard] = useState([])
-  const [add, setAdd] = useState([]);
+  const dispatch = useDispatch();
+  const myItem = useSelector(state => state.item.addItem);
+  const showItem = useSelector(state => state.item.showItem);
+
   const [popup, setPopup] = useState(false)
 
-
-  var newCard = card
-  var newAdd = add
-
-  const handleClick = (item) => {
-
-    setAdd([...add, item])
-
-    newCard = newCard.filter((newItem) => newItem.id !== item.id)
-    console.log('newCard', newCard)
-    setCard(newCard)
-
-    return (
-      <AddFav item={add} />
-    )
-
-  }
-  console.log(add)
-
-  const deleteItem = (item) => {
-    newAdd = newAdd.filter((newItem) => newItem.id !== item.id)
-    setAdd(newAdd);
-    setCard([...card, item])
-    console.log('newAdd', newAdd);
-  }
-
   const onChange = (event) => {
-    setName(event.target.value);
+    dispatch(searchItem(event.target.value))
 
   }
-  console.log(name)
 
   const openPopup = () => {
     setPopup(true)
@@ -72,11 +47,25 @@ function App() {
     setPopup(false)
   }
 
+  const handleAdd = (item) => {
+    dispatch(addItem(item))
+
+  }
+
+  const fetchAllItem = (item) => {
+    item.map((item) => {
+      dispatch(allItem(item))
+    })
+  }
+  const handleDelete = (item) => {
+    dispatch(deleteItem(item))
+  }
+
   useEffect(() => {
 
     axios.get('http://localhost:3030/api/cards')
       .then((res) => {
-        setCard(res.data.cards)
+        fetchAllItem(res.data.cards)
 
       })
 
@@ -85,9 +74,9 @@ function App() {
   return (
     <>
       <Container>
-        {popup ? <List handleClick={handleClick} onChange={onChange} card={card} filterCard={filterCard} name={name} closePopup={closePopup} /> : null}
+        {popup ? <List handleAdd={handleAdd} onChange={onChange} card={showItem} closePopup={closePopup} /> : null}
 
-        <AddFav add={add} deleteItem={deleteItem} openPopup={openPopup} />
+        <AddFav add={myItem} deleteItem={handleDelete} openPopup={openPopup} />
 
       </Container>
     </>

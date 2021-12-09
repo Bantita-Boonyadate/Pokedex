@@ -113,7 +113,8 @@ const Happiness = styled.img`
     margin-right: 5px;
 `
 
-function ShowList({ item, handleClick, isAdd, deleteItem }) {
+function ShowList({ item, isAdd, deleteItem, handleAdd }) {
+
     var hps = parseInt(item.hp);
     var damages = item.attacks;
     var weaks = item.weaknesses;
@@ -160,7 +161,7 @@ function ShowList({ item, handleClick, isAdd, deleteItem }) {
                     <ContaiTitle>
                         <Title>{item.name}</Title>
                         {
-                            isAdd ? <Delete onClick={deleteItem}>x</Delete> : <Add onClick={handleClick}>Add</Add>
+                            isAdd ? <Delete onClick={deleteItem}>x</Delete> : <Add onClick={() => handleAdd(item)}>Add</Add>
                         }
                     </ContaiTitle>
 

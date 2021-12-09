@@ -49,7 +49,7 @@ const IconSearch = styled.img`
     width: 30px;
 `
 
-function List({ handleClick, onChange, card, name, closePopup }) {
+function List({ handleAdd, onChange, card, closePopup}) {
 
     return (
         <>
@@ -59,13 +59,10 @@ function List({ handleClick, onChange, card, name, closePopup }) {
                     <ContainerSearch>
                         <Input onChange={onChange} placeholder="Find pokemon"></Input><IconSearch src={searchIcon} />
                     </ContainerSearch>
-                    {
-                        card.filter(data =>
-                            data.name.toLowerCase().includes(name.toLowerCase()) || data.type.toLowerCase().includes(name.toLowerCase())
-
-                        ).map(data => {
+                    { 
+                        card.map(data => {
                             return (
-                                <ShowList key={data.id} item={data} handleClick={() => handleClick(data)} />
+                                <ShowList key={data.id} item={data} handleAdd={() => handleAdd(data)} />
                             )
                         })
                     }
